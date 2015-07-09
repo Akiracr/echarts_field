@@ -1,0 +1,180 @@
+<?php
+
+/**
+ * Implementation of hook_field_info()
+ */
+function echarts_field_field_info() { 
+
+  return array( 
+    'echarts_json_field' => array( 
+      'label' => t('ECharts field'), 
+      'description' => t('Implementation of Echart library on a field'),
+      'default_widget' => 'echarts_json_field_widget',
+      'default_formatter' => 'poutine_maker_poutine_formatter',
+    ),
+  );
+
+}
+
+
+/**
+ * Implementation of hook_field_widget_info()
+ */
+function echarts_field_field_widget_info() {
+  
+  return array(
+    'echarts_json_field_widget' => array(
+      'label' => t('EChart JSON field'),
+      'field types' => array('echarts_json_field'),
+    ),
+  );
+
+}
+
+
+/**
+ * Implements hook_field_widget_form()
+ */
+function echarts_field_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element){
+
+  $field_name = $instance['field_name'];
+  $required = $element['#required'];
+  $item = &$items[$delta];
+
+  $element += array(
+    '#type' => 'fieldset',
+  );
+
+  $element['graph_type'] = array(
+    '#title' => t('Graph type'),
+    '#type' => 'select',
+    '#required' => $required,
+    '#options' => echarts_load_types(),
+    '#default_value' => isset($items[$delta]['graph_type']) ? $items[$delta]['graph_type'] : '',
+  );
+
+  $element['json_url'] = array(
+    '#title' => t('JSON URL'),
+    '#type' => 'textfield',
+    '#required' => $required,
+    '#default_value' => isset($items[$delta]['json_url']) ? $items[$delta]['json_url'] : '',
+  );
+
+  $element['axis_x'] = array(
+    '#title' => t('Axis X'),
+    '#type' => 'textfield',
+    '#required' => $required,
+    '#default_value' => isset($items[$delta]['axis_x']) ? $items[$delta]['axis_x'] : '',
+  );
+
+  $element['series'] = array(
+    '#title' => t('Series'),
+    '#type' => 'textfield',
+    '#required' => $required,
+    '#default_value' => isset($items[$delta]['series']) ? $items[$delta]['series'] : '',
+  );
+
+  return $element;
+
+}
+
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function echarts_field_field_is_empty($item, $field) {
+
+  if ( empty($item['json_url']) ) {
+    return TRUE;
+  }
+
+  return FALSE;
+
+}
+
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function echarts_field_field_formatter_info() {
+  
+  return array(
+    'echarts_json_field_graph' => array(
+      'label' => t('Default ECharts'),
+      'field types' => array('echarts_json_field'),
+    ),
+  );
+
+}
+
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function echarts_field_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display){
+
+  $element = array();
+
+  switch ($display['type']) {
+  case 'echarts_json_field_graph':
+    $format_field = 'echarts_field_json_graph';//echarts_field_json_field_graph_format';
+    break;
+  }
+
+  foreach ($items as $delta => $item) {
+    $element[$delta] = array(
+      '#markup' => theme($format_field, array('item' => $item)),
+    );
+  }
+
+  return $element;
+
+}
+
+
+/**
+ * Implements hook_theme()
+ */
+function echarts_field_theme(){
+
+  return array(
+    'echarts_field_json_graph' => array(
+      'template' => 'theme/echarts_field_json_graph',
+      'variables' => array(
+        'item' => array(),
+      ),
+    ),
+  );
+
+}
+
+
+/**
+ * Implements custom template_preprocess
+ */
+function template_preprocess_echarts_field_json_graph(&$vars){
+
+  module_load_include('inc', 'echarts_field', 'includes/echarts_field');
+  $item = &$vars['item'];
+
+  $output = '';
+  $graph_settings = array();
+  $graph_type = $item['graph_type'];
+  $series = explode(',',trim($item['series']));
+  $json_data = file_get_contents($item['json_url']);
+  $json_array = json_decode($json_data);
+
+  switch ($graph_type) {
+    case 'line':
+      $graph_settings['echart']['grap'] = echarts_field_generate_setting_bar_line_graph($json_array, $item['axis_x'], $series, 'line');
+      break;
+    default:
+      $output = '<h3>' . t('This kind of graph is not implemented yet') . '</h3>';
+      break;
+  }
+
+  $vars['graph'] = render_echarts($graph_settings);
+
+}
+
+
