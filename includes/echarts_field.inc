@@ -69,7 +69,7 @@ function echarts_field_get_series($xaxis, $series, $data, $graph_type, $showvalu
 /**
 * Based on createBarLineChart by Randall Sibaja R.
 **/
-function echarts_field_generate_setting_bar_line_graph($json, $xaxis, $series, $type, $title = ''){
+function  ($json, $xaxis, $series, $type, $title = ''){
 
   $output = array(
     'chartType' => $type,

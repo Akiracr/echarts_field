@@ -166,7 +166,7 @@ function template_preprocess_echarts_field_json_graph(&$vars){
 
   switch ($graph_type) {
     case 'line':
-      $graph_settings['echart']['grap'] = echarts_field_generate_setting_bar_line_graph($json_array, $item['axis_x'], $series, 'line');
+      $graph_settings['echart']['grap'] = echarts_field_generate_settings_bar_line_graph($json_array, $item['axis_x'], $series, 'line');
       break;
     default:
       $output = '<h3>' . t('This kind of graph is not implemented yet') . '</h3>';
