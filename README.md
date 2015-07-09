@@ -4,4 +4,4 @@ This module create a new field type which allow the user setting the display of 
 
 ## Requirements ##
 
-You only need the module [Baidu ECharts][https://www.drupal.org/project/echarts] and it and be sure that it is enabled
+You only need the module [Baidu ECharts](https://www.drupal.org/project/echarts) and it and be sure that it is enabled
