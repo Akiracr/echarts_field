@@ -69,7 +69,7 @@ function echarts_field_get_series($xaxis, $series, $data, $graph_type, $showvalu
 /**
 * Based on createBarLineChart by Randall Sibaja R.
 **/
-function  ($json, $xaxis, $series, $type, $title = ''){
+function  echarts_field_generate_settings_bar_line_graph($json, $xaxis, $series, $type, $title = ''){
 
   $output = array(
     'chartType' => $type,
@@ -79,21 +79,39 @@ function  ($json, $xaxis, $series, $type, $title = ''){
         'tooltip' => array('trigger' => 'axis'),          
         'title' => array('text' => $title),
         'legend' => array(
-        'data' => $series,
-        'orient' => 'horizontal',
+          'data' => $series,
+          'orient' => 'horizontal',
         ),
         'toolbox' => array(
             'show' => TRUE,
             'feature' => array(
-              'mark' => array('show' => TRUE, 'title' => array('mark' => 'Marcar', 'markUndo' => 'Deshacer','markClear' => 'Limpiar Marcas')),
+              'mark' => array(
+                'show' => TRUE,
+                'title' => array(
+                  'mark' => 'Marcar',
+                  'markUndo' => 'Deshacer',
+                  'markClear' => 'Limpiar Marcas'
+                )
+              ),
               'dataView' => array(
               'show' => TRUE,
               'readOnly' => false,
               'title' => 'Ver Datos',
-              'lang' => array('Datos', 'Regresar', '')          
-              ),
-            'restore' => array('show' => TRUE, 'title' => 'Refrescar'),
-            'saveAsImage' => array('show' => TRUE, 'title' => 'Guardar', 'type' => 'png'),
+              'lang' => array(
+                'Datos',
+                'Regresar',
+                ''
+              )          
+            ),
+            'restore' => array(
+              'show' => TRUE,
+              'title' => 'Refrescar'
+            ),
+            'saveAsImage' => array(
+              'show' => TRUE,
+              'title' => 'Guardar',
+              'type' => 'png'
+            ),
           )
         ),
         'dataZoom' => array(
